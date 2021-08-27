@@ -29,18 +29,31 @@ const forecast = require("./utils/forecast");
 //   }
 // })
 
-geocode.geocode("Philadelphia", (error, data) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log(data);
-  }
-});
-
-forecast.forecast(40.0115, -75.1327, (error, data) => {
-  if (error) {
-    console.log("Error", error);
-  } else {
+if (
+  process.argv.length == 4 &&
+  Number(process.argv[2]) !== NaN &&
+  Number(process.argv[3]) !== NaN
+) {
+  forecast.forecast(process.argv[2], process.argv[3], (error, data) => {
+    if (error) {
+      return console.log(error);
+    }
     console.log("Data", data);
-  }
-});
+  });
+} else {
+  let location = process.argv
+    .splice(2, 2)
+    .reduce((prev, cur) => prev + " " + cur, "");
+
+  geocode.geocode(location, (error, data) => {
+    if (error) {
+      return console.log(error);
+    }
+    forecast.forecast(data.latitude, data.longtitude, (error, data) => {
+      if (error) {
+        return console.log("Error", error);
+      }
+      console.log("Data", data);
+    });
+  });
+}
