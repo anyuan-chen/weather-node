@@ -45,11 +45,12 @@ if (
     .splice(2, 2)
     .reduce((prev, cur) => prev + " " + cur, "");
 
-  geocode.geocode(location, (error, data) => {
+  geocode.geocode(location, (error, {latitude, longtitude} = {}) => {
+    
     if (error) {
       return console.log(error);
     }
-    forecast.forecast(data.latitude, data.longtitude, (error, data) => {
+    forecast.forecast(latitude, longtitude, (error, data) => {
       if (error) {
         return console.log("Error", error);
       }
